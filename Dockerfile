@@ -14,5 +14,8 @@ RUN GIT_SSL_NO_VERIFY=1 git clone https://github.com/pgbigm/pg_bigm.git \
     && cd .. \
     && rm -rf pg_bigm
 
-RUN echo "psql -v ON_ERROR_STOP=1 --username '$$POSTGRES_USER' --dbname '$$POSTGRES_DB' -c 'CREATE EXTENSION pg_bigm;'" > /docker-entrypoint-initdb.d/init-pg-bigm.sh \
-    && chmod +x /docker-entrypoint-initdb.d/init-pg-bigm.sh
+RUN { \
+    echo '#!/bin/bash'; \
+    echo 'set -e'; \
+    echo 'psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "CREATE EXTENSION pg_bigm;"'; \
+} > /docker-entrypoint-initdb.d/init-pg-bigm.sh && chmod +x /docker-entrypoint-initdb.d/init-pg-bigm.sh
